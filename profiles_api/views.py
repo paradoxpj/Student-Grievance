@@ -129,3 +129,16 @@ class UserProfileFeedViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         '''Sets the user profile to the logged in user'''
         serializer.save(user_profile=self.request.user)
+
+
+class IssueViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.IssueSerializer
+    queryset = models.Issue.objects.all()
+
+
+class CollegeViewSet(viewsets.ModelViewSet):
+    '''Handling colleges'''
+    serializer_class = serializers.CollegeSerializer
+    queryset = models.College.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'location',)

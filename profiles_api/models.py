@@ -116,6 +116,7 @@ class Grievance(models.Model):
     issue = models.ForeignKey(Issue, null=True, on_delete=models.SET_NULL)
     description = models.CharField(max_length=400)
     lodger = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    #created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         '''Retrieve string representation of the Grievance'''

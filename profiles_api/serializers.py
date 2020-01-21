@@ -43,3 +43,19 @@ class ProfileFeedItemSerializer(serializers.ModelSerializer):
                 'read_only': True,
             }
         }
+
+
+class IssueSerializer(serializers.ModelSerializer):
+    '''serializes issues'''
+
+    class Meta:
+        model = models.Issue
+        fields = ('id', 'name',)
+
+
+class CollegeSerializer(serializers.ModelSerializer):
+    '''serializes list of colleges'''
+
+    class Meta:
+        model = models.College
+        fields = ('id', 'name', 'location',)
