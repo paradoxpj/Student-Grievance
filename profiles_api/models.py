@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
 from django.conf import settings
+from django.core.validators import MinLengthValidator
+
+
+import datetime
 
 
 class UserProfileManager(BaseUserManager):
@@ -57,7 +61,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 
 class ProfileFeedItem(models.Model):
-    '''Profile status update'''
     user_profile = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -66,5 +69,54 @@ class ProfileFeedItem(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        '''Return the model as a string'''
         return self.status_text
+
+
+class College(models.Model):
+    '''Database model for Colleges'''
+    name = models.CharField(max_length = 150)
+    location = models.CharField(max_length = 150)
+
+    def __str__(self):
+        '''Retrieve string representation of the College'''
+        return self.name + ", " + self.location
+
+
+class Issue(models.Model):
+    '''Database model for Issue category'''
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+class UserDetails(models.Model):
+    '''User profile details'''
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    college = models.ForeignKey(
+        College,
+        on_delete=models.CASCADE,
+    )
+    roll_no = models.IntegerField()
+    #dp = models.ImageField(null=True)
+    department = models.CharField(max_length=100)
+    contact = models.CharField(max_length=10, validators=[MinLengthValidator(10)])
+
+    year = models.IntegerField(
+        choices=[(r,r) for r in range(1984, datetime.date.today().year+1)]
+    )
+
+
+class Grievance(models.Model):
+    '''Database model for Grievance reports'''
+    title = models.CharField(max_length=80)
+    issue = models.ForeignKey(Issue, null=True, on_delete=models.SET_NULL)
+    description = models.CharField(max_length=400)
+    lodger = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        '''Retrieve string representation of the Grievance'''
+        return self.title + self.lodger
